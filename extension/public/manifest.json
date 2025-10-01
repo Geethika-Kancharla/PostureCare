@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "PostureCare",         
+  "version": "1.0",
+  "description": "Real-time posture correction and wellness management", 
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "permissions": ["storage", "activeTab"]
+}

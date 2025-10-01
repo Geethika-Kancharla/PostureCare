@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force popup size */
+html, body, #root {
+  @apply w-[500px] h-[600px] m-0 p-0 overflow-hidden;
+}
