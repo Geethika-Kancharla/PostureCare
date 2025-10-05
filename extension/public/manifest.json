@@ -11,5 +11,10 @@
       "128": "icon128.png"
     }
   },
-  "permissions": ["storage", "activeTab"]
+  "permissions": ["storage", "activeTab", "offscreen", "alarms"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "host_permissions": ["http://localhost:5000/*", "https://localhost:5000/*"]
 }
