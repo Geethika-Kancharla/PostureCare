@@ -37,10 +37,19 @@ function loop() {
   timer = setInterval(analyzeOnce, 2000);
 }
 
+async function isRunning() {
+  try {
+    const { posture_running } = await chrome.storage?.local?.get('posture_running') || {};
+    return !!posture_running;
+  } catch (_) {
+    return false;
+  }
+}
+
 chrome.runtime.onMessage.addListener((msg) => {
   if (!msg) return;
   if (msg.type === 'KEEPALIVE') {
-    if (!stream) start();
+    isRunning().then((running) => { if (running && !stream) start(); });
   } else if (msg.type === 'OFFSCREEN_START') {
     start();
   } else if (msg.type === 'OFFSCREEN_STOP') {

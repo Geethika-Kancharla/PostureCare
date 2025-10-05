@@ -37,8 +37,10 @@ chrome.runtime.onStartup.addListener(async () => {
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== ALARM_NAME) return;
   try {
+    const { [STORAGE_KEY_RUNNING]: running } = await chrome.storage.local.get(STORAGE_KEY_RUNNING);
+    if (!running) return;
     await ensureOffscreenDocument();
-    // ping offscreen to continue loop
+    // ping offscreen to continue loop only when running
     chrome.runtime.sendMessage({ type: 'KEEPALIVE' });
   } catch (e) {
     // no-op
