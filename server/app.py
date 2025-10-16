@@ -75,9 +75,9 @@ def analyze_posture_metrics(head, left_shoulder, right_shoulder):
 
     # Check posture per metric
     bad_head = check_stable("head", head_angle < 80)
-    bad_shoulders = check_stable("shoulders", abs(shoulder_angle) > 3)
+    bad_shoulders = check_stable("shoulders", abs(shoulder_angle) > 3.5)
     bad_side = check_stable("side_twist", side_twist > 0.45)
-    bad_forward = check_stable("forward_lean", forward_lean < 0.7)
+    bad_forward = check_stable("forward_lean", forward_lean < 0.75)
 
     # Aggregate issues
     issues = []
