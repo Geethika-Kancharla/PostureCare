@@ -75,15 +75,13 @@ def process_image(image_data):
             head_angle = angle(head, between_shoulders)
             shoulder_angle = angle(left_shoulder, right_shoulder)
             side_twist = depth_diff(left_shoulder, right_shoulder)
-            forward_lean = depth_diff(head, between_shoulders)
             
             # Smoothing
             client_key = _client_key()
             current_metrics = {
                 "head_angle": head_angle,
                 "shoulder_angle": shoulder_angle,
-                "side_twist": side_twist,
-                "forward_lean": forward_lean,
+                "side_twist": side_twist
             }
             metric_history[client_key].append(current_metrics)
             hist = metric_history[client_key]
@@ -96,15 +94,13 @@ def process_image(image_data):
             if smoothed["head_angle"] < 80:
                 bad_posture = True
                 issues.append("Head angle too low")
-            if smoothed["shoulder_angle"] > 3:
+            if smoothed["shoulder_angle"] > 3.5:
                 bad_posture = True
                 issues.append("Shoulders uneven")
             if smoothed["side_twist"] > 0.45:
                 bad_posture = True
                 issues.append("Side twist detected")
-            if smoothed["forward_lean"] < 0.8:
-                bad_posture = True
-                issues.append("Forward lean detected")
+          
             
             return {
                 "success": True,
@@ -114,8 +110,7 @@ def process_image(image_data):
                 "metrics": {
                     "head_angle": round(smoothed["head_angle"], 2),
                     "shoulder_angle": round(smoothed["shoulder_angle"], 2),
-                    "side_twist": round(smoothed["side_twist"], 2),
-                    "forward_lean": round(smoothed["forward_lean"], 2),
+                    "side_twist": round(smoothed["side_twist"], 2)
                 }
             }
         else:

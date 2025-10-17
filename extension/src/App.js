@@ -173,7 +173,6 @@ function App() {
     };
   }, []);
 
-  // Load persisted background running state and listen for state changes
   useEffect(() => {
     const loadState = async () => {
       try {
@@ -223,7 +222,6 @@ function App() {
     try {
       await chrome.runtime.sendMessage({ type: 'STOP_BACKGROUND_ANALYSIS' });
       setBackgroundRunning(false);
-      // Ensure local preview is stopped as well
       stopCamera();
     } catch (_) {}
   };
@@ -231,8 +229,7 @@ function App() {
   return (
     <div className="p-4 flex flex-col items-center justify-start bg-gray-100 h-full min-h-[600px]">
       <h1 className="text-xl font-bold mb-4 text-center">PostureCare</h1>
-      
-      {/* Camera Section */}
+ 
       <div className="w-full mb-4 relative">
         <video
           ref={videoRef}
@@ -249,9 +246,6 @@ function App() {
         />
       </div>
 
-      {/* Controls removed per request */}
-
-  {/* Background Analysis Status + Controls */}
   <div className="w-full max-w-sm mt-4 p-3 rounded-lg border bg-white">
     <div className="flex items-center justify-between">
       <div className="text-sm font-semibold">Background Analysis</div>
@@ -265,23 +259,20 @@ function App() {
           className="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
           onClick={startBackground}
         >
-          Start Background Analysis
+          Start
         </button>
       ) : (
         <button
           className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-800"
           onClick={stopBackground}
         >
-          Stop Background Analysis
+          Stop 
         </button>
       )}
     </div>
-    <div className="mt-2 text-xs text-gray-600">
-      Continues after closing this popup. Reopen to check status.
-    </div>
+  
   </div>
 
-      {/* Results */}
       {postureResult && (
         <div className="w-full max-w-sm mt-4 p-4 rounded-lg border">
           <div className={`text-center font-bold text-lg mb-2 ${
@@ -312,26 +303,20 @@ function App() {
         </div>
       )}
 
-      {/* Error Display */}
       {error && (
         <div className="w-full max-w-sm mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           <div className="mb-2">{error}</div>
-          <div className="flex gap-2">
+         
             <button
               className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
               onClick={startCamera}
             >
-              Retry Permission
+              Error in fetching data
             </button>
-          </div>
+       
         </div>
       )}
 
-      {/* Instructions */}
-      <div className="w-full max-w-sm mt-4 text-xs text-gray-600 text-center">
-        <p>1. Click "Start Camera" to begin</p>
-        <p>2. Or click "Start Background Analysis" to keep running after closing</p>
-      </div>
     </div>
   );
 }
