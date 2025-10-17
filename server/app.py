@@ -1,23 +1,19 @@
-from flask import Flask, request, jsonify
+from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 import cv2
-import numpy as np
+import time
 import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-import base64
-import io
-from PIL import Image
-import sys
+import numpy as np
 import os
-
-from util import Landmark, angle, depth_diff, createModel
-from collections import deque, defaultdict
+from util import Landmark, angle, line, depth_diff, createModel
+import base64
+from collections import deque
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
-model_path = os.path.join(os.path.dirname(__file__), 'pose_landmarker_heavy.task')
+# Load model
+model_path = os.path.join(os.path.dirname(__file__), "models", "pose_landmarker_heavy.task")
 model = createModel(model_path)
 
 # Simple temporal smoothing buffers per client
@@ -133,21 +129,25 @@ def health_check():
 def analyze_posture():
     try:
         data = request.get_json()
-        
-        if not data or 'image' not in data:
-            return jsonify({
-                "success": False,
-                "error": "No image data provided"
-            }), 400
-        
-        result = process_image(data['image'])
-        return jsonify(result)
-        
-    except Exception as e:
-        return jsonify({
-            "success": False,
-            "error": f"Server error: {str(e)}"
-        }), 500
+        image_data = data.get("image")
+        if not image_data:
+            return jsonify({"success": False, "error": "No image provided"}), 400
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+        image_bytes = base64.b64decode(image_data.split(",")[1])
+        np_arr = np.frombuffer(image_bytes, np.uint8)
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        _, metrics, issues, is_good_posture = analyze_frame(frame)
+
+        return jsonify({
+            "success": True,
+            "metrics": metrics,
+            "issues": issues,
+            "is_good_posture": is_good_posture
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

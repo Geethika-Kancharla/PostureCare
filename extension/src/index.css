@@ -4,5 +4,7 @@
 
 /* Force popup size */
 html, body, #root {
-  @apply w-[500px] h-[600px] m-0 p-0 overflow-hidden;
+  height: 100%;
+  margin: 0;
 }
+
